@@ -131,30 +131,31 @@ def get_trending_topics(query: Optional[str] = None, web_limit: int = 5, reddit_
     # Set the first result from redis as the search query for Serp
     search_query = topics[0]["title"]
 
-    # SerpAPI 
-    serp_results = _search_serpapi(search_query, web_limit)
-    # merge without duplicates (by url)
-    existing_urls = {t["url"] for t in topics}
-    existing_titles = {t["title"] for t in topics}
-    for r in serp_results:
-        if r["url"] not in existing_urls and r["title"] not in existing_titles:
-                topics.append(r)
-                existing_urls.add(r["url"])
-                existing_titles.add(r["title"])
-
-    serp_results = []
-
-    # Fallback to DuckDuckGo if serp did not work
-    if not serp_results:
-        ddg_results = _search_duckduckgo(search_query, web_limit)
-        # merge without duplicates (by title and url)
+    if web_limit > 0:
+        # SerpAPI 
+        serp_results = _search_serpapi(search_query, web_limit)
+        # merge without duplicates (by url)
         existing_urls = {t["url"] for t in topics}
         existing_titles = {t["title"] for t in topics}
-        for r in ddg_results:
+        for r in serp_results:
             if r["url"] not in existing_urls and r["title"] not in existing_titles:
-                topics.append(r)
-                existing_urls.add(r["url"])
-                existing_titles.add(r["title"])
+                    topics.append(r)
+                    existing_urls.add(r["url"])
+                    existing_titles.add(r["title"])
+
+        serp_results = []
+
+        # Fallback to DuckDuckGo if serp did not work
+        if not serp_results:
+            ddg_results = _search_duckduckgo(search_query, web_limit)
+            # merge without duplicates (by title and url)
+            existing_urls = {t["url"] for t in topics}
+            existing_titles = {t["title"] for t in topics}
+            for r in ddg_results:
+                if r["url"] not in existing_urls and r["title"] not in existing_titles:
+                    topics.append(r)
+                    existing_urls.add(r["url"])
+                    existing_titles.add(r["title"])
 
     return topics
 

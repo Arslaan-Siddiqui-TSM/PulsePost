@@ -24,8 +24,8 @@ from tools.linkedin_tool import post_to_linkedin
 
 load_dotenv()
 
-st.set_page_config(page_title="LinkedIn Auto MVP", layout="wide")
-st.title("🤖 LinkedIn Auto MVP")
+st.set_page_config(page_title="PulsePost - LinkedIn Auto MVP", layout="wide")
+st.title("🤖 PulsePost")
 
 if not os.getenv("GOOGLE_API_KEY"):
     st.error("❌ Missing GOOGLE_API_KEY environment variable.")
@@ -47,7 +47,7 @@ fetch_btn = st.sidebar.button("Get Trending Topics")
 
 if fetch_btn:
     with st.spinner("Fetching trending topics..."):
-        topics = get_trending_topics(query=query, web_limit=5, reddit_limit=5)
+        topics = get_trending_topics(query=query, web_limit=0, reddit_limit=5)
     if not topics:
         st.error("No topics found. Check your keys or connection.")
     else:
@@ -108,13 +108,15 @@ if post_text:
 
     with col1:
         if st.button("💾 Save Locally"):
-            post_to_linkedin(post_text, publish=False, metadata={"topic": content.get("title")})
+            topic_title = content.get("title") if content else ""
+            post_to_linkedin(post_text, publish=False, metadata={"topic": topic_title})
             st.success("Saved locally to /data/generated_posts.json")
 
     with col2:
         if st.button("🚀 Publish to LinkedIn"):
             with st.spinner("Publishing to LinkedIn..."):
-                resp = post_to_linkedin(post_text, publish=True, metadata={"topic": content.get("title")})
+                topic_title = content.get("title") if content else ""
+                resp = post_to_linkedin(post_text, publish=True, metadata={"topic": topic_title})
             if resp.get("published"):
                 st.success("✅ Successfully posted to LinkedIn!")
             else:
@@ -124,4 +126,4 @@ else:
 
 
 st.markdown("---")
-st.caption("Built with ❤️ using LangChain + Streamlit + Gemini")
+st.caption("Built with ❤️ by Arslaan.")
