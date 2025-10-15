@@ -371,7 +371,7 @@ LINKEDIN_CLIENT_SECRET=your_linkedin_client_secret
 
 #### **Google Gemini API Key (Required)**
 
-1. Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+1. Visit [Google AI Studio](https://aistudio.google.com/api-keys)
 2. Sign in with your Google account
 3. Click "Create API Key"
 4. Copy and add to `.env` as `GOOGLE_API_KEY`
