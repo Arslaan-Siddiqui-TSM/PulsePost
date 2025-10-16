@@ -77,7 +77,7 @@ content = st.session_state.get("content")
 if content:
     st.subheader("📰 Extracted Article Preview")
     st.write(f"### {content['title']}")
-    st.text_area("Article Text (editable)", content["text"][:2000], key="article_text", height=600)
+    st.text_area("Article Text (editable)", content["text"], key="article_text", height=600)
 
     if st.button("Generate LinkedIn Post"):
         with st.spinner("Generating post with Gemini..."):
